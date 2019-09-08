@@ -1,3 +1,15 @@
 [submodule "lib/Arduino-PID-Library"]
 	path = lib/Arduino-PID-Library
 	url = https://github.com/br3ttb/Arduino-PID-Library
+[submodule "lib/hd44780"]
+	path = lib/hd44780
+	url = https://github.com/duinoWitchery/hd44780
+[submodule "lib/Arduino-LiquidCrystal-I2C-library"]
+	path = lib/Arduino-LiquidCrystal-I2C-library
+	url = https://github.com/fdebrabander/Arduino-LiquidCrystal-I2C-library
+[submodule "lib/OneWire"]
+	path = lib/OneWire
+	url = https://github.com/PaulStoffregen/OneWire
+[submodule "lib/Arduino-Temperature-Control-Library"]
+	path = lib/Arduino-Temperature-Control-Library
+	url = https://github.com/milesburton/Arduino-Temperature-Control-Library
