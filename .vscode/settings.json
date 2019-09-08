@@ -1,0 +1,6 @@
+{
+    "terminal.integrated.env.osx": {
+        "PATH": "/Users/nvgeele/.platformio/penv/bin:/Users/nvgeele/.platformio/penv:/Users/nvgeele/google-cloud-sdk/bin:/Users/nvgeele/.cabal/bin:/Applications/FastMPJ//bin:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/usr/local/MacGPG2/bin:/opt/X11/bin:/usr/local/git/bin:/Users/nvgeele/.rvm/bin:/Users/nvgeele/.rvm/bin",
+        "PLATFORMIO_CALLER": "vscode"
+    }
+}
