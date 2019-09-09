@@ -1,5 +1,6 @@
 //LAST EDITED 22.10.16
 //=====================
+#include <Arduino.h>
 #include <PID_v1.h>
 #include <PID_AutoTune_v0.h>
 #include <Wire.h>
@@ -7,6 +8,7 @@
 #include <DallasTemperature.h>
 #include <LiquidCrystal_I2C.h>
 #include <EEPROM.h>
+#include "main.h"
 // ************************************************
 // Pin definitions
 // ************************************************
@@ -19,6 +21,27 @@
 #define BUTTON_SHIFT  11
 #define BUTTON_SELECT 9
 #define PWM_OUT 10
+
+//// Function prototypes
+void DoControl();
+void read_but();
+void read_enc();
+void LoadParameters();
+void DriveOutput();
+void Off();
+void Tune_Sp();
+void TuneP();
+void Run();
+void TuneI();
+void TuneD();
+void setPWM();
+void SaveParameters();
+void StartAutoTune();
+void FinishAutoTune();
+void printPWM();
+void setBacklight();
+void EEPROM_writeDouble(int address, double value);
+double EEPROM_readDouble(int address);
 
 // ************************************************
 // PID Variables and constants
@@ -670,7 +693,7 @@ void Run()
 void DoControl()
 {
   // Read the input:
-  if (sensors.isConversionAvailable(0))
+  if (sensors.isConversionComplete())
   {
     Input = sensors.getTempC(tempSensor);
     Input1= sensors.getTempC(tempSensor1);
