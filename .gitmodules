@@ -4,9 +4,6 @@
 [submodule "lib/hd44780"]
 	path = lib/hd44780
 	url = https://github.com/duinoWitchery/hd44780
-[submodule "lib/Arduino-LiquidCrystal-I2C-library"]
-	path = lib/Arduino-LiquidCrystal-I2C-library
-	url = https://github.com/fdebrabander/Arduino-LiquidCrystal-I2C-library
 [submodule "lib/OneWire"]
 	path = lib/OneWire
 	url = https://github.com/PaulStoffregen/OneWire
