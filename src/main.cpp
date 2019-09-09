@@ -8,8 +8,6 @@
 //   // put your main code here, to run repeatedly:
 // }
 
-
-
 //LAST EDITED 22.10.16
 //=====================
 #include <Arduino.h>
@@ -20,6 +18,7 @@
 #include <DallasTemperature.h>
 #include <LiquidCrystal_I2C.h>
 #include <EEPROM.h>
+#include "main.h"
 // ************************************************
 // Pin definitions
 // ************************************************
@@ -683,7 +682,7 @@ void Run()
 void DoControl()
 {
   // Read the input:
-  if (sensors.isConversionAvailable(0))
+  if (sensors.isConversionComplete())
   {
     Input = sensors.getTempC(tempSensor);
     Input1= sensors.getTempC(tempSensor1);
