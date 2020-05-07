@@ -1,0 +1,17 @@
+void setup_lcd();
+void setup_sensor();
+void rotary_IRQ();
+void off();
+void mash();
+void boil();
+void read_buttons();
+void prepare_mash();
+void clear_buttons();
+void auto_tune();
+void prepare_autotune();
+void finish_autotune();
+void setup_pid();
+void free_pid();
+void load_parameters();
+void save_parameters();
+void run_control();
