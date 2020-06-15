@@ -44,7 +44,7 @@ volatile boolean rotary_change = false;
 
 volatile byte button_enc, button_a, button_b = 0;
 
-enum operatingState { OFF, PRE_MASH, MASH, BOIL, AUTOTUNE };
+enum operatingState { OFF, PRE_MASH, MASH, PRE_BOIL, BOIL, AUTOTUNE };
 operatingState op_state = OFF;
 
 double set_point;
@@ -231,10 +231,10 @@ void off() {
       op_state = PRE_MASH;
       break;
     case 1:
-      // TODO
+      op_state = PRE_BOIL;
       break;
     case 2:
-      // TODO
+      // TODO: Tune
       break;
     case 3:
       op_state = AUTOTUNE;
@@ -302,41 +302,126 @@ void run_control() {
   on_time = pid_output;
 }
 
+void ask_confirm(const __FlashStringHelper * message) {
+  lcd.clear();
+  lcd.print(message);
+  lcd.setCursor(0, 1);
+  lcd.print(F("cfrm?"));
+
+  while(button_enc != 1) { read_buttons(); }
+  button_enc = 0;
+}
+
 void prepare_mash() {
-  lcd.clear();
-  lcd.print(F("Check Water Lvl"));
-  lcd.setCursor(0, 1);
-  lcd.print(F("cfrm?"));
+  ask_confirm(F("Check Water Lvl"));
+  ask_confirm(F("Check Sensor"));
+  ask_confirm(F("Contactor ON"));
+  ask_confirm(F("Pump ON"));
 
-  while(button_enc != 1) { read_buttons(); }
-  button_enc = 0;
-
-  lcd.clear();
-  lcd.print(F("Check Sensor"));
-  lcd.setCursor(0, 1);
-  lcd.print(F("cfrm?"));
-
-  while(button_enc != 1) { read_buttons(); }
-  button_enc = 0;
-
-  lcd.clear();
-  lcd.print(F("Arm Contactor"));
-  lcd.setCursor(0, 1);
-  lcd.print(F("cfrm?"));
-
-  while(button_enc != 1) { read_buttons(); }
-  button_enc = 0;
+  // We set a default mash temperature of 64C.
+  set_point = 64;
 
   setup_pid();
+  set_sp();
+
   window_start_time = millis();
   op_state = MASH;
 }
 
-void mash() {
-  // TODO Print status on screen
-  // TODO Read buttons to change modus (maybe have a menu we can go to?)
+/**
+ * Modify the SetPoint.
+ * Encoder button toggles between 1 and 0.1 increments.
+ * Button A confirms.
+ * Button B cancels.
+ */
+void set_sp() {
+  lcd.clear();
+  lcd.print(F("Temperature?"));
+  lcd.setCursor(0, 1);
+  lcd.print(set_point);
 
-  run_control();
+  clear_buttons();
+  rotary_change = false;
+
+  double new_point = set_point;
+  float increment = 1.0;
+
+  while(true) {
+    read_buttons();
+
+    if(button_enc == 1) {
+      button_enc = 0;
+      increment = increment == 0.1 ? 1 : 0.1;
+    }
+
+    if(button_a == 1) {
+      clear_buttons();
+      set_point = new_point;
+      return;
+    }
+
+    if(button_b == 1) {
+      clear_buttons();
+      return;
+    }
+    
+    if(rotary_change) {
+      if(rotary_direction == -1) { // Decrease
+        if(new_point > 0)
+          new_point -= increment;
+      } else { // Increase
+        if(new_point < 100)
+          new_point += increment;
+      }
+      rotary_change = false;
+
+      lcd.setCursor(0, 1);
+      lcd.print(new_point);
+    }
+
+    if(op_state == MASH) {
+      run_control();
+    }
+  }
+}
+
+void mash() {
+  // TODO: Print status on screen
+  // TODO: Read buttons to change modus (maybe have a menu we can go to?)
+  // TODO: Interrupt for output
+  // TODO: Free PID after mash mode
+
+  lcd.clear();
+  lcd.print(F("SP: "));
+  lcd.print(set_point, 1);
+  lcd.setCursor(0, 1);
+  lcd.print(F("PV: "));
+
+  while(true) {
+    read_buttons();
+
+    // TODO: Zo doen of anders???
+    // Andere optie: aparte tune_sp modus, iets makkelijker voor het scherm.
+    // Probleem: we kunnen die dan niet herbruiken om SP te zetten in pre-mash.
+    if(button_enc == 1) {
+      clear_buttons();
+      set_sp();
+    }
+
+    run_control();
+    lcd.setCursor(4, 1);
+    lcd.print(pid_input, 1);
+
+    delay(100);
+  }
+}
+
+void prepare_boil() {
+  // If we want to enter the boil mode from the start menu, we have to do
+  // some setup that is usually already done when coming from the mash
+  // mode.
+  
+  // TODO
 }
 
 void boil() {
