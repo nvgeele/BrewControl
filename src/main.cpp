@@ -107,6 +107,8 @@ void setup() {
   pinMode(BUT_A, INPUT_PULLUP);
   pinMode(BUT_B, INPUT_PULLUP);
 
+  sensors.setResolution(temp_sensor, 12);
+
   // TODO: Load PID parameters
   // TODO: Set up timers and interrupts
 }
@@ -130,8 +132,9 @@ void rotary_IRQ() {
 }
 
 void read_buttons() {
-  // TODO review met input_pullup shit
   bool pin_status;
+  // delay(3);
+
   pin_status = digitalRead(BUT_A);
   if(pin_status == LOW && button_a != 128) { button_a = 128; }
   if(pin_status == HIGH && button_a == 128) { button_a = 1; }
@@ -152,27 +155,43 @@ void clear_buttons() {
 }
 
 void loop() {
-  // sensors.requestTemperatures();
-  // sensors.getTempC(temp_sensor);
+  switch(op_state) {
+    case OFF:
+      off();
+      break;
+    case PRE_MASH:
+      prepare_mash();
+      break;
+    case MASH:
+      mash();
+      break;
+    case PRE_BOIL:
+      prepare_boil();
+      break;
+    case BOIL:
+      boil();
+      break;
+  }
+}
 
-  DPRINTLN(sensors.getResolution(temp_sensor), DEC);
-  exit(0);
-  // sensors.setResolution(temp_sensor, 12);
-
-  // switch(op_state) {
-  //   case OFF:
-  //     off();
-  //     break;
-  //   case PRE_MASH:
-  //     prepare_mash();
-  //     break;
-  //   case MASH:
-  //     mash();
-  //     break;
-  //   case BOIL:
-  //     boil();
-  //     break;
-  // }
+void print_off_menu(int selected) {
+  lcd.clear();
+  lcd.print(F("Select w ENTER"));
+  lcd.setCursor(0, 1);
+  switch(selected) {
+    case 0:
+      lcd.print(F("MASH"));
+      break;
+    case 1:
+      lcd.print(F("BOIL"));
+      break;
+    case 2:
+      lcd.print(F("TUNE"));
+      break;
+    case 3:
+      lcd.print(F("AUTOTUNE"));
+      break;
+  }
 }
 
 /** Can select between modes MASH, BOIL, TUNE, and AUTOTUNE */
@@ -181,8 +200,9 @@ void off() {
 
   free_pid(); // Ensure PID is off
   digitalWrite(SSR_PIN, LOW); // Ensure element off
+  
+  print_off_menu(selected);
 
-  lcd.print(F("Select w ENTER"));
   rotary_change = false;
 
   while(button_enc != 1) {
@@ -200,22 +220,8 @@ void off() {
         else
           selected += 1;
       }
-    }
-
-    lcd.setCursor(0, 1);
-    switch(selected) {
-      case 0:
-        lcd.print(F("MASH"));
-        break;
-      case 1:
-        lcd.print(F("BOIL"));
-        break;
-      case 2:
-        lcd.print(F("TUNE"));
-        break;
-      case 3:
-        lcd.print(F("AUTOTUNE"));
-        break;
+      print_off_menu(selected);
+      rotary_change = false;
     }
   }
 
