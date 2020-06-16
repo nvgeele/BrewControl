@@ -15,3 +15,5 @@ void free_pid();
 void load_parameters();
 void save_parameters();
 void run_control();
+void prepare_boil();
+void set_sp();
