@@ -1,4 +1,5 @@
 #include "main.h"
+#include "pins.h"
 
 #include <Arduino.h>
 #include <Wire.h>
@@ -13,18 +14,6 @@
 
 #define LCD_COLS 16
 #define LCD_ROWS 2
-
-#define SSR_PIN 7
-#define ONE_WIRE_BUS 10
-#define ENC_A 2
-#define ENC_B 3
-#define MASH_PIN 5
-#define BOIL_PIN 6
-#define ELEM_PIN 7
-
-#define BUT_ENC 4
-#define BUT_A 8
-#define BUT_B 9
 
 #define SP_ADDR 0
 #define KP_ADDR 8
