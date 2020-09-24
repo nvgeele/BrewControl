@@ -168,7 +168,7 @@ void off() {
 
   rotary_change = false;
 
-  while(button_enc != 1) {
+  while(button_enc != BUT_PRESSED) {
     read_buttons();
 
     if(rotary_change) {
@@ -188,7 +188,7 @@ void off() {
     }
   }
 
-  button_enc = 0;
+  button_enc = BUT_OFF;
   switch(selected) {
     case 0:
       op_state = PRE_MASH;
@@ -271,8 +271,8 @@ void ask_confirm(const __FlashStringHelper * message) {
   lcd.setCursor(0, 1);
   lcd.print(F("cfrm?"));
 
-  while(button_enc != 1) { read_buttons(); }
-  button_enc = 0;
+  while(button_enc != BUT_PRESSED) { read_buttons(); }
+  button_enc = BUT_OFF;
 }
 
 void prepare_mash() {
@@ -312,12 +312,12 @@ void set_sp() {
   while(true) {
     read_buttons();
 
-    if(button_enc == 1) {
-      button_enc = 0;
+    if(button_enc == BUT_PRESSED) {
+      button_enc = BUT_OFF;
       increment = increment == 0.1 ? 1 : 0.1;
     }
 
-    if(button_a == 1) {
+    if(button_a == BUT_PRESSED) {
       clear_buttons();
       set_point = new_point;
       return;
@@ -366,7 +366,7 @@ void mash() {
     // TODO: Zo doen of anders???
     // Andere optie: aparte tune_sp modus, iets makkelijker voor het scherm.
     // Probleem: we kunnen die dan niet herbruiken om SP te zetten in pre-mash.
-    if(button_enc == 1) {
+    if(button_enc == BUT_PRESSED) {
       clear_buttons();
       set_sp();
     }
