@@ -1,7 +1,7 @@
 #include "buttons.h"
 #include "pins.h"
 
-volatile byte button_enc, button_a, button_b = 0;
+volatile byte button_enc, button_a, button_b = BUT_OFF;
 
 void setup_buttons() {
   pinMode(BUT_ENC, INPUT_PULLUP);
