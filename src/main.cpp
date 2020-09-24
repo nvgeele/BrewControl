@@ -1,5 +1,6 @@
 #include "main.h"
 #include "pins.h"
+#include "buttons.h"
 
 #include <Arduino.h>
 #include <Wire.h>
@@ -30,8 +31,6 @@ DeviceAddress temp_sensor;
 
 volatile signed short rotary_direction = 0;
 volatile boolean rotary_change = false;
-
-volatile byte button_enc, button_a, button_b = 0;
 
 enum operatingState { OFF, PRE_MASH, MASH, PRE_BOIL, BOIL, AUTOTUNE };
 operatingState op_state = OFF;
@@ -92,9 +91,7 @@ void setup() {
   pinMode(ELEM_PIN, OUTPUT);
   digitalWrite(ELEM_PIN, LOW);
 
-  pinMode(BUT_ENC, INPUT_PULLUP);
-  pinMode(BUT_A, INPUT_PULLUP);
-  pinMode(BUT_B, INPUT_PULLUP);
+  setup_buttons();
 
   sensors.setResolution(temp_sensor, 12);
 
@@ -118,29 +115,6 @@ void rotary_IRQ() {
     rotary_direction = -1;
     rotary_change = true;
   }
-}
-
-void read_buttons() {
-  bool pin_status;
-  // delay(3);
-
-  pin_status = digitalRead(BUT_A);
-  if(pin_status == LOW && button_a != 128) { button_a = 128; }
-  if(pin_status == HIGH && button_a == 128) { button_a = 1; }
-
-  pin_status = digitalRead(BUT_B);
-  if(pin_status == LOW && button_b != 128) { button_b = 128; }
-  if(pin_status == HIGH && button_b == 128) { button_b = 1; }
-
-  pin_status = digitalRead(BUT_ENC);
-  if(pin_status == LOW && button_enc != 128) { button_enc = 128; }
-  if(pin_status == HIGH && button_enc == 128) { button_enc = 1; }
-}
-
-void clear_buttons() {
-  button_a = 0;
-  button_b = 0;
-  button_enc = 0;
 }
 
 void loop() {
