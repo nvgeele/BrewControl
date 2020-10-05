@@ -391,3 +391,7 @@ void boil() {
   // TODO
   // TODO: pre-boil arm contactor
 }
+
+void calibrate () {
+  // TODO
+}
